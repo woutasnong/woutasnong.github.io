@@ -1,0 +1,34 @@
+name: Update Recipes
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Read existing recipes
+        id: read_recipes
+        run: |
+          if [ -f recipes.json ]; then
+            echo "::set-output name=recipes::$(cat recipes.json | jq -c .)"
+          else
+            echo "::set-output name=recipes::[]"
+          fi
+
+      - name: Add new recipe
+        run: |
+          NEW_RECIPE='{"title": "${{ github.event.issue.title }}", "content": "${{ github.event.issue.body }}"}'
+          UPDATED_RECIPES=$(echo '${{ steps.read_recipes.outputs.recipes }}' | jq ". + [$NEW_RECIPE]")
+          echo $UPDATED_RECIPES | jq . > recipes.json
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Added new recipe from GitHub Issues"
+          file_pattern: recipes.json
