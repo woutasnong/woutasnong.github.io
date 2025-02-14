@@ -46,17 +46,16 @@
     </div>
     
     <script>
-        const GITHUB_USERNAME = "woutasnong";  // Replace with your GitHub username
-        const REPO_NAME = "woutasnong/woutasnong.github.io";  // Replace with your GitHub repo name
-        const FILE_PATH = "recipes.json";  // JSON file location
-        const BRANCH = "main";  // Branch name (default is "main")
+        const GITHUB_USERNAME = "woutasnong";
+        const REPO_NAME = "woutasnong.github.io";
+        const FILE_PATH = "recipes.json";
+        const BRANCH = "main";
         const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`;
         const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/${FILE_PATH}`;
-        
-        const TOKEN = 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;  // ⚠️ Replace this with your GitHub PAT
-    
+        const TOKEN = "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";
+
         document.addEventListener('DOMContentLoaded', loadRecipes);
-    
+
         async function loadRecipes() {
             try {
                 let response = await fetch(GITHUB_RAW_URL);
@@ -66,7 +65,7 @@
                 console.error("Error loading recipes:", error);
             }
         }
-    
+
         function displayRecipes(recipes) {
             let recipeList = document.getElementById('recipe-list');
             recipeList.innerHTML = '';
@@ -77,16 +76,15 @@
                 recipeList.appendChild(recipeDiv);
             });
         }
-    
+
         async function addRecipe() {
             let title = document.getElementById('recipe-title').value;
             let content = document.getElementById('recipe-content').value;
-    
+
             if (title && content) {
                 let response = await fetch(GITHUB_RAW_URL);
                 let recipes = await response.json();
                 recipes.push({ title, content });
-    
                 await updateGitHubFile(recipes);
                 document.getElementById('recipe-title').value = '';
                 document.getElementById('recipe-content').value = '';
@@ -94,17 +92,17 @@
                 alert("Please enter both title and details.");
             }
         }
-    
+
         async function updateGitHubFile(recipes) {
             try {
                 let getFile = await fetch(GITHUB_API_URL, {
                     headers: { Authorization: `token ${TOKEN}` }
                 });
                 let fileData = await getFile.json();
-    
-                let updatedContent = btoa(JSON.stringify(recipes, null, 2)); // Convert to base64
+
+                let updatedContent = btoa(JSON.stringify(recipes, null, 2));
                 let commitMessage = "Updated recipes.json via GitHub API";
-    
+
                 let response = await fetch(GITHUB_API_URL, {
                     method: "PUT",
                     headers: {
@@ -117,10 +115,10 @@
                         sha: fileData.sha
                     })
                 });
-    
+
                 if (response.ok) {
                     alert("Recipe added successfully!");
-                    loadRecipes(); // Reload the recipes
+                    loadRecipes();
                 } else {
                     console.error("Error updating file:", response.statusText);
                 }
@@ -131,88 +129,3 @@
     </script>
 </body>
 </html>
-
-<script>
-    const GITHUB_USERNAME = "woutasnong";  // Replace with your GitHub username
-    const REPO_NAME = "woutasnong/woutasnong.github.io";  // Replace with your GitHub repo name
-    const FILE_PATH = "recipes.json";  // JSON file location
-    const BRANCH = "main";  // Branch name (default is "main")
-    const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`;
-    const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/${FILE_PATH}`;
-    
-    const TOKEN = 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;  // ⚠️ Replace this with your GitHub PAT
-
-    document.addEventListener('DOMContentLoaded', loadRecipes);
-
-    async function loadRecipes() {
-        try {
-            let response = await fetch(GITHUB_RAW_URL);
-            let recipes = await response.json();
-            displayRecipes(recipes);
-        } catch (error) {
-            console.error("Error loading recipes:", error);
-        }
-    }
-
-    function displayRecipes(recipes) {
-        let recipeList = document.getElementById('recipe-list');
-        recipeList.innerHTML = '';
-        recipes.forEach(recipe => {
-            let recipeDiv = document.createElement('div');
-            recipeDiv.className = 'recipe';
-            recipeDiv.innerHTML = `<h2>${recipe.title}</h2><p>${recipe.content}</p>`;
-            recipeList.appendChild(recipeDiv);
-        });
-    }
-
-    async function addRecipe() {
-        let title = document.getElementById('recipe-title').value;
-        let content = document.getElementById('recipe-content').value;
-
-        if (title && content) {
-            let response = await fetch(GITHUB_RAW_URL);
-            let recipes = await response.json();
-            recipes.push({ title, content });
-
-            await updateGitHubFile(recipes);
-            document.getElementById('recipe-title').value = '';
-            document.getElementById('recipe-content').value = '';
-        } else {
-            alert("Please enter both title and details.");
-        }
-    }
-
-    async function updateGitHubFile(recipes) {
-        try {
-            let getFile = await fetch(GITHUB_API_URL, {
-                headers: { Authorization: `token ${TOKEN}` }
-            });
-            let fileData = await getFile.json();
-
-            let updatedContent = btoa(JSON.stringify(recipes, null, 2)); // Convert to base64
-            let commitMessage = "Updated recipes.json via GitHub API";
-
-            let response = await fetch(GITHUB_API_URL, {
-                method: "PUT",
-                headers: {
-                    Authorization: `token ${TOKEN}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message: commitMessage,
-                    content: updatedContent,
-                    sha: fileData.sha
-                })
-            });
-
-            if (response.ok) {
-                alert("Recipe added successfully!");
-                loadRecipes(); // Reload the recipes
-            } else {
-                console.error("Error updating file:", response.statusText);
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    }
-</script>
