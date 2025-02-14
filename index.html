@@ -67,6 +67,18 @@
 
         document.addEventListener('DOMContentLoaded', loadRecipes);
 
+        const GITHUB_RAW_URL = "https://raw.githubusercontent.com/your-username/your-repo-name/main/recipes.json";
+
+        async function loadRecipes() {
+            try {
+                let response = await fetch(GITHUB_RAW_URL);
+                let recipes = await response.json();
+                displayRecipes(recipes);
+            } catch (error) {
+                console.error("Error loading recipes:", error);
+            }
+        }
+
         async function loadRecipes() {
             try {
                 let response = await fetch(GITHUB_RAW_URL);
