@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favorite Recipes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .recipe {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .recipe h2 {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Favorite Recipes</h1>
+        
+        <div id="recipe-list">
+            <!-- Recipes will be added here -->
+        </div>
+        
+        <h2>Add a New Recipe</h2>
+        <input type="text" id="recipe-title" placeholder="Recipe Title" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+        <textarea id="recipe-content" placeholder="Recipe Details" style="width: 100%; padding: 8px; height: 100px;"></textarea>
+        <button onclick="addRecipe()" style="width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; cursor: pointer;">Add Recipe</button>
+    </div>
+    
+    <script>
+        function addRecipe() {
+            let title = document.getElementById('recipe-title').value;
+            let content = document.getElementById('recipe-content').value;
+            
+            if(title && content) {
+                let recipeList = document.getElementById('recipe-list');
+                let recipeDiv = document.createElement('div');
+                recipeDiv.className = 'recipe';
+                recipeDiv.innerHTML = `<h2>${title}</h2><p>${content}</p>`;
+                recipeList.appendChild(recipeDiv);
+                
+                document.getElementById('recipe-title').value = '';
+                document.getElementById('recipe-content').value = '';
+            } else {
+                alert('Please enter both title and details');
+            }
+        }
+    </script>
+</body>
+</html>
