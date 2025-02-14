@@ -107,38 +107,41 @@
         }
 
         async function updateGitHubFile(recipes) {
-            try {
-                let getFile = await fetch(GITHUB_API_URL, {
-                    headers: { Authorization: `token ${TOKEN}` }
-                });
-                let fileData = await getFile.json();
-
-                let updatedContent = btoa(JSON.stringify(recipes, null, 2));
-                let commitMessage = "Updated recipes.json via GitHub API";
-
-                let response = await fetch(GITHUB_API_URL, {
-                    method: "PUT",
-                    headers: {
-                        Authorization: `token ${TOKEN}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: commitMessage,
-                        content: updatedContent,
-                        sha: fileData.sha
-                    })
-                });
-
-                if (response.ok) {
-                    alert("Recipe added successfully!");
-                    loadRecipes();
-                } else {
-                    console.error("Error updating file:", response.statusText);
-                }
-            } catch (error) {
-                console.error("Error:", error);
-            }
+    try {
+        let getFile = await fetch(GITHUB_API_URL, {
+            headers: { Authorization: `token ${TOKEN}` }
+        });
+        if (!getFile.ok) {
+            throw new Error(`Error fetching file: ${getFile.statusText}`);
         }
+        let fileData = await getFile.json();
+
+        let updatedContent = btoa(JSON.stringify(recipes, null, 2));
+        let commitMessage = "Updated recipes.json via GitHub API";
+
+        let response = await fetch(GITHUB_API_URL, {
+            method: "PUT",
+            headers: {
+                Authorization: `token ${TOKEN}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: commitMessage,
+                content: updatedContent,
+                sha: fileData.sha
+            })
+        });
+
+        if (response.ok) {
+            alert("Recipe added successfully!");
+            loadRecipes();
+        } else {
+            throw new Error(`Error updating file: ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
     </script>
 </body>
 </html>
