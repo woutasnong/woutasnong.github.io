@@ -29,6 +29,12 @@
         .recipe h2 {
             margin: 0;
         }
+        .overview {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -43,6 +49,11 @@
         <input type="text" id="recipe-title" placeholder="Recipe Title" style="width: 100%; padding: 8px; margin-bottom: 10px;">
         <textarea id="recipe-content" placeholder="Recipe Details" style="width: 100%; padding: 8px; height: 100px;"></textarea>
         <button onclick="addRecipe()" style="width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; cursor: pointer;">Add Recipe</button>
+        
+        <div class="overview">
+            <h2>Recipe Overview</h2>
+            <p id="recipe-overview">Total Recipes: 0</p>
+        </div>
     </div>
     
     <script>
@@ -52,7 +63,7 @@
         const BRANCH = "main";
         const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`;
         const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/${FILE_PATH}`;
-        const TOKEN = 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"
+        const TOKEN = "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";
 
         document.addEventListener('DOMContentLoaded', loadRecipes);
 
@@ -68,6 +79,7 @@
 
         function displayRecipes(recipes) {
             let recipeList = document.getElementById('recipe-list');
+            let recipeOverview = document.getElementById('recipe-overview');
             recipeList.innerHTML = '';
             recipes.forEach(recipe => {
                 let recipeDiv = document.createElement('div');
@@ -75,6 +87,7 @@
                 recipeDiv.innerHTML = `<h2>${recipe.title}</h2><p>${recipe.content}</p>`;
                 recipeList.appendChild(recipeDiv);
             });
+            recipeOverview.textContent = `Total Recipes: ${recipes.length}`;
         }
 
         async function addRecipe() {
